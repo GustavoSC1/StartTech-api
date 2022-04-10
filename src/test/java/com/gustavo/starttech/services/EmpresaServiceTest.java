@@ -48,5 +48,5 @@ public class EmpresaServiceTest {
 		Assertions.assertThat(savedEmpresaDto.getEmail()).isEqualTo("google@gmail.com");
 		Assertions.assertThat(savedEmpresaDto.getCnpj()).isEqualTo("51799337000141");	
 	}
-
+	
 }
