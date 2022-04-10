@@ -1,5 +1,7 @@
 package com.gustavo.starttech.services;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.gustavo.starttech.dtos.EmpresaDTO;
@@ -22,6 +24,18 @@ public class EmpresaService {
 		empresa = empresaRepository.save(empresa);
 		
 		return new EmpresaDTO(empresa);
+	}
+	
+	public EmpresaDTO find(Long id) {
+		Empresa empresa = findById(id);
+		return new EmpresaDTO(empresa);
+	}
+	
+	public Empresa findById(Long id) {
+		Optional<Empresa> empresaOptional = empresaRepository.findById(id);
+		Empresa empresa = empresaOptional.orElseThrow(() -> new RuntimeException("Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName()));
+				
+		return empresa;
 	}
 
 }
