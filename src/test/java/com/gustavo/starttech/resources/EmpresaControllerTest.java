@@ -45,7 +45,8 @@ public class EmpresaControllerTest {
 		long id = 2l;
 		
 		EmpresaNewDTO newEmpresa = new EmpresaNewDTO("Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
-		EmpresaDTO savedEmpresa = new EmpresaDTO(id, "Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
+		EmpresaDTO savedEmpresa = createNewEmpresaDto();
+		savedEmpresa.setId(id);
 		
 		BDDMockito.given(empresaService.save(Mockito.any(EmpresaNewDTO.class))).willReturn(savedEmpresa);
 	
@@ -61,6 +62,33 @@ public class EmpresaControllerTest {
 		.perform(request)
 		.andExpect( MockMvcResultMatchers.status().isCreated() )
 		.andExpect( MockMvcResultMatchers.header().string(HttpHeaders.LOCATION, Matchers.containsString("/empresas/"+id)) );
+	}
+	
+	@Test
+	@DisplayName("Must get one empresa per id")
+	public void findEmpresaTest() throws Exception {
+		Long id = 2l;
+		
+		EmpresaDTO empresa = createNewEmpresaDto();
+		empresa.setId(id);
+		
+		BDDMockito.given(empresaService.find(id)).willReturn(empresa);
+		
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(EMPRESA_API+"/"+id).accept(MediaType.APPLICATION_JSON);
+		
+		mvc.perform(request)
+			.andExpect(MockMvcResultMatchers.status().isOk())
+			.andExpect(MockMvcResultMatchers.jsonPath("id").value(id))
+			.andExpect(MockMvcResultMatchers.jsonPath("nome").value("Google LLC"))
+			.andExpect(MockMvcResultMatchers.jsonPath("email").value("google@gmail.com"))
+			.andExpect(MockMvcResultMatchers.jsonPath("cnpj").value("51799337000141"))
+			.andExpect(MockMvcResultMatchers.jsonPath("email").value("51799337000141"))
+			.andExpect(MockMvcResultMatchers.jsonPath("nomeFantasia").value("Google"));
+		
+	}
+	
+	private EmpresaDTO createNewEmpresaDto() {
+		return new EmpresaDTO(null, "Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
 	}
 
 }
