@@ -31,6 +31,20 @@ public class EmpresaService {
 		return new EmpresaDTO(empresa);
 	}
 	
+	public EmpresaDTO update(Long id, EmpresaDTO empresaDto) {
+		Empresa empresa = findById(id);
+		
+		empresa.setNome(empresa.getNome());
+		empresa.setCelular(empresa.getCelular());
+		empresa.setTelefone(empresa.getTelefone());
+		empresa.setCnpj(empresa.getCnpj());
+		empresa.setNomeFantasia(empresa.getNomeFantasia());
+		
+		empresa = empresaRepository.save(empresa);
+		
+		return new EmpresaDTO(empresa);
+	}
+	
 	public Empresa findById(Long id) {
 		Optional<Empresa> empresaOptional = empresaRepository.findById(id);
 		Empresa empresa = empresaOptional.orElseThrow(() -> new RuntimeException("Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName()));

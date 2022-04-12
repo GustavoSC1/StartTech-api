@@ -73,6 +73,33 @@ public class EmpresaServiceTest {
 		Assertions.assertThat(foundEmpresa.getCnpj()).isEqualTo(empresa.getCnpj());	
 	}
 	
+	@Test
+	@DisplayName("Must update a empresa")
+	public void updateEmpresaTest() {
+		// Cenário
+		Long id = 2l;
+		
+		EmpresaDTO empresaDto = new EmpresaDTO(id, "Meta Platforms, Inc.", "meta@gmail.com", "1829129908", "23488218876", "51799337000567", "Meta");
+		
+		Empresa foundEmpresa = createNewEmpresa();
+		foundEmpresa.setId(id);
+		
+		Empresa updatedEmpresa = new Empresa(id, "Meta Platforms, Inc.", "meta@gmail.com", "1829129908", "23488218876", "51799337000567", "Meta");
+		
+		Mockito.when(empresaRepository.findById(id)).thenReturn(Optional.of(foundEmpresa));
+		Mockito.when(empresaRepository.save(Mockito.any(Empresa.class))).thenReturn(updatedEmpresa);
+		
+		// Execução		
+		EmpresaDTO updatedEmpresaDto =  empresaService.update(id, empresaDto);
+				
+		// Verificação
+		Assertions.assertThat(updatedEmpresaDto.getId()).isEqualTo(empresaDto.getId());
+		Assertions.assertThat(updatedEmpresaDto.getNome()).isEqualTo(empresaDto.getNome());
+		Assertions.assertThat(updatedEmpresaDto.getEmail()).isEqualTo(empresaDto.getEmail());
+		Assertions.assertThat(updatedEmpresaDto.getCnpj()).isEqualTo(empresaDto.getCnpj());
+		Assertions.assertThat(updatedEmpresaDto.getNomeFantasia()).isEqualTo(empresaDto.getNomeFantasia());
+	}
+	
 	private Empresa createNewEmpresa() {
 		return new Empresa(null, "Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
 	}
