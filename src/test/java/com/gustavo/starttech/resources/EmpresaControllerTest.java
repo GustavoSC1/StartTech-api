@@ -74,7 +74,7 @@ public class EmpresaControllerTest {
 		
 		BDDMockito.given(empresaService.find(id)).willReturn(empresa);
 		
-		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(EMPRESA_API+"/"+id).accept(MediaType.APPLICATION_JSON);
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(EMPRESA_API.concat("/"+id)).accept(MediaType.APPLICATION_JSON);
 		
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isOk())
@@ -82,9 +82,33 @@ public class EmpresaControllerTest {
 			.andExpect(MockMvcResultMatchers.jsonPath("nome").value("Google LLC"))
 			.andExpect(MockMvcResultMatchers.jsonPath("email").value("google@gmail.com"))
 			.andExpect(MockMvcResultMatchers.jsonPath("cnpj").value("51799337000141"))
-			.andExpect(MockMvcResultMatchers.jsonPath("email").value("51799337000141"))
 			.andExpect(MockMvcResultMatchers.jsonPath("nomeFantasia").value("Google"));
 		
+	}
+	
+	@Test
+	@DisplayName("Must update a empresa")
+	public void updateEmpresaTest() throws Exception {
+		Long id = 2l;
+		
+		EmpresaDTO empresaDto = new EmpresaDTO(id, "Meta Platforms, Inc.", "meta@gmail.com", "1829129908", "23488218876", "51799337000567", "Meta");
+		
+		BDDMockito.given(empresaService.update(Mockito.anyLong(), Mockito.any(EmpresaDTO.class))).willReturn(empresaDto);
+		
+		String json = new ObjectMapper().writeValueAsString(empresaDto);
+		
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+													.put(EMPRESA_API.concat("/"+id))
+													.contentType(MediaType.APPLICATION_JSON)
+													.accept(MediaType.APPLICATION_JSON)
+													.content(json);
+		mvc.perform(request)
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("id").value(id))
+		.andExpect(MockMvcResultMatchers.jsonPath("nome").value("Meta Platforms, Inc."))
+		.andExpect(MockMvcResultMatchers.jsonPath("email").value("meta@gmail.com"))
+		.andExpect(MockMvcResultMatchers.jsonPath("cnpj").value("51799337000567"))
+		.andExpect(MockMvcResultMatchers.jsonPath("nomeFantasia").value("Meta"));
 	}
 	
 	private EmpresaDTO createNewEmpresaDto() {
