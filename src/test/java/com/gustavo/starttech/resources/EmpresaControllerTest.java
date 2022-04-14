@@ -65,6 +65,23 @@ public class EmpresaControllerTest {
 	}
 	
 	@Test
+	@DisplayName("Deve lançar erro de validação quando não houver dados suficientes para criação do livro.")
+	public void createInvalidEmpresaTest() throws Exception {
+		
+		String json = new ObjectMapper().writeValueAsString(new EmpresaDTO());
+		
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+				.post(EMPRESA_API)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.content(json);
+		
+		mvc.perform(request)
+			.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+			.andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(6)));		
+	}
+	
+	@Test
 	@DisplayName("Must get one empresa per id")
 	public void findEmpresaTest() throws Exception {
 		Long id = 2l;

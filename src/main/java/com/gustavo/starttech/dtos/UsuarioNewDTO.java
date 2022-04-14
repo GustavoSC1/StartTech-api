@@ -1,16 +1,27 @@
 package com.gustavo.starttech.dtos;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
 import java.io.Serializable;
 
 public class UsuarioNewDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Length(min=3, max=120, message="O tamanho deve ser entre 3 e 120 caracteres")
 	private String nome;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Email(message="Email inválido")
 	private String email;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String telefone;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String celular;
 	
 	public UsuarioNewDTO() {

@@ -2,6 +2,8 @@ package com.gustavo.starttech.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +27,7 @@ public class EmpresaController {
 	private EmpresaService empresaService;
 	
 	@PostMapping
-	public ResponseEntity<EmpresaDTO> save(@RequestBody EmpresaNewDTO empresaNewDTO) {
+	public ResponseEntity<EmpresaDTO> save(@Valid @RequestBody EmpresaNewDTO empresaNewDTO) {
 		EmpresaDTO empresa = empresaService.save(empresaNewDTO);
 		
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
