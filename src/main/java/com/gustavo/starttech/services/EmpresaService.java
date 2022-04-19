@@ -8,6 +8,7 @@ import com.gustavo.starttech.dtos.EmpresaDTO;
 import com.gustavo.starttech.dtos.EmpresaNewDTO;
 import com.gustavo.starttech.entities.Empresa;
 import com.gustavo.starttech.repositories.EmpresaRepository;
+import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class EmpresaService {
@@ -47,7 +48,7 @@ public class EmpresaService {
 	
 	public Empresa findById(Long id) {
 		Optional<Empresa> empresaOptional = empresaRepository.findById(id);
-		Empresa empresa = empresaOptional.orElseThrow(() -> new RuntimeException("Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName()));
+		Empresa empresa = empresaOptional.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName()));
 				
 		return empresa;
 	}

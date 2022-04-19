@@ -63,9 +63,9 @@ public class EmpresaControllerTest {
 		.andExpect( MockMvcResultMatchers.status().isCreated() )
 		.andExpect( MockMvcResultMatchers.header().string(HttpHeaders.LOCATION, Matchers.containsString("/empresas/"+id)) );
 	}
-	
+		
 	@Test
-	@DisplayName("Deve lançar erro de validação quando não houver dados suficientes para criação do livro.")
+	@DisplayName("Should throw validation error when there is not enough data for empresa creation")
 	public void createInvalidEmpresaTest() throws Exception {
 		
 		String json = new ObjectMapper().writeValueAsString(new EmpresaDTO());

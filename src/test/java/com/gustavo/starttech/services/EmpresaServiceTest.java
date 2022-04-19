@@ -2,6 +2,7 @@ package com.gustavo.starttech.services;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import com.gustavo.starttech.dtos.EmpresaDTO;
 import com.gustavo.starttech.dtos.EmpresaNewDTO;
 import com.gustavo.starttech.entities.Empresa;
 import com.gustavo.starttech.repositories.EmpresaRepository;
+import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -71,6 +73,22 @@ public class EmpresaServiceTest {
 		Assertions.assertThat(foundEmpresa.getNome()).isEqualTo(empresa.getNome());
 		Assertions.assertThat(foundEmpresa.getEmail()).isEqualTo(empresa.getEmail());
 		Assertions.assertThat(foundEmpresa.getCnpj()).isEqualTo(empresa.getCnpj());	
+	}
+	
+	@Test
+	@DisplayName("Should return error when trying to get a non-existent company")
+	public void empresaNotFoundByIdTest() {
+		// Cenário
+		Long id = 1l;
+		Mockito.when(empresaRepository.findById(id)).thenReturn(Optional.empty());
+		
+		// Execução		
+		Exception exception = assertThrows(ObjectNotFoundException.class, () -> {empresaService.find(id);});
+		
+		String expectedMessage = "Objeto não encontrado! Id: 1, Tipo: com.gustavo.starttech.entities.Empresa";
+		String actualMessage = exception.getMessage();
+		
+		Assertions.assertThat(actualMessage).isEqualTo(expectedMessage);
 	}
 	
 	@Test
