@@ -118,6 +118,23 @@ public class EmpresaServiceTest {
 		Assertions.assertThat(updatedEmpresaDto.getNomeFantasia()).isEqualTo(empresaDto.getNomeFantasia());
 	}
 	
+	@Test
+	@DisplayName("Should return error when trying to update a non-existent company")
+	public void empresaNotUpdatedByIdTest() {
+		// Cenário
+		Long id = 1l;
+		EmpresaDTO empresaDto = new EmpresaDTO(createNewEmpresa());
+		Mockito.when(empresaRepository.findById(id)).thenReturn(Optional.empty());
+		
+		// Execução		
+		Exception exception = assertThrows(ObjectNotFoundException.class, () -> {empresaService.update(id, empresaDto);});
+		
+		String expectedMessage = "Objeto não encontrado! Id: 1, Tipo: com.gustavo.starttech.entities.Empresa";
+		String actualMessage = exception.getMessage();
+		
+		Assertions.assertThat(actualMessage).isEqualTo(expectedMessage);
+	}
+	
 	private Empresa createNewEmpresa() {
 		return new Empresa(null, "Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
 	}
