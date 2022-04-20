@@ -68,7 +68,7 @@ public class EmpresaControllerTest {
 	@DisplayName("Should throw validation error when there is not enough data for empresa creation")
 	public void createInvalidEmpresaTest() throws Exception {
 		
-		String json = new ObjectMapper().writeValueAsString(new EmpresaDTO());
+		String json = new ObjectMapper().writeValueAsString(new EmpresaNewDTO());
 		
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 				.post(EMPRESA_API)
@@ -126,6 +126,24 @@ public class EmpresaControllerTest {
 		.andExpect(MockMvcResultMatchers.jsonPath("email").value("meta@gmail.com"))
 		.andExpect(MockMvcResultMatchers.jsonPath("cnpj").value("51799337000567"))
 		.andExpect(MockMvcResultMatchers.jsonPath("nomeFantasia").value("Meta"));
+	}
+	
+	@Test
+	@DisplayName("Should throw validation error when there is not enough data to update the company")
+	public void updateInvalidEmpresaTest() throws Exception {
+		Long id = 2l;
+		
+		String json = new ObjectMapper().writeValueAsString(new EmpresaDTO());
+		
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+				.put(EMPRESA_API.concat("/"+id))
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.content(json);
+		
+		mvc.perform(request)
+		.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+		.andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(6)));
 	}
 	
 	private EmpresaDTO createNewEmpresaDto() {
