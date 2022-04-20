@@ -108,7 +108,7 @@ public class EmpresaControllerTest {
 	public void updateEmpresaTest() throws Exception {
 		Long id = 2l;
 		
-		EmpresaDTO empresaDto = new EmpresaDTO(id, "Meta Platforms, Inc.", "meta@gmail.com", "1829129908", "23488218876", "51799337000567", "Meta");
+		EmpresaDTO empresaDto = new EmpresaDTO(id, "Meta Platforms, Inc.", "meta@gmail.com", "1829129908", "23488218876", "15546120000166", "Meta");
 		
 		BDDMockito.given(empresaService.update(Mockito.anyLong(), Mockito.any(EmpresaDTO.class))).willReturn(empresaDto);
 		
@@ -124,7 +124,7 @@ public class EmpresaControllerTest {
 		.andExpect(MockMvcResultMatchers.jsonPath("id").value(id))
 		.andExpect(MockMvcResultMatchers.jsonPath("nome").value("Meta Platforms, Inc."))
 		.andExpect(MockMvcResultMatchers.jsonPath("email").value("meta@gmail.com"))
-		.andExpect(MockMvcResultMatchers.jsonPath("cnpj").value("51799337000567"))
+		.andExpect(MockMvcResultMatchers.jsonPath("cnpj").value("15546120000166"))
 		.andExpect(MockMvcResultMatchers.jsonPath("nomeFantasia").value("Meta"));
 	}
 	
