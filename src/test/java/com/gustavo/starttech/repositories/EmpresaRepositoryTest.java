@@ -47,9 +47,38 @@ public class EmpresaRepositoryTest {
 		
 		// Execução
 		Optional<Empresa> foundEmpresa = empresaRepository.findById(empresa.getId());
-		System.out.println("Id da Empresa: "+empresa.getId());
+		empresaRepository.existsById(empresa.getId());
+		
 		// Execução
 		Assertions.assertThat(foundEmpresa.isPresent()).isTrue();
+	}
+	
+	@Test
+	@DisplayName("Must check if there is a company with the email or cnpj provided")
+	public void existsByEmailOrCnpjTest() {
+		// Cenario
+		Empresa empresa = createNewEmpresa();
+		entityManager.persist(empresa);
+		
+		// Execução
+		boolean foundEmpresa = empresaRepository.existsByEmailOrCnpj(empresa.getEmail(), empresa.getCnpj());
+		
+		// Execução
+		Assertions.assertThat(foundEmpresa).isTrue();
+	}
+	
+	@Test
+	@DisplayName("Should return false when verifying the existence of a company by email or cnpj")
+	public void empresaNotExistsByEmailOrCnpjTest() {
+		// Cenario
+		Empresa empresa = createNewEmpresa();
+		entityManager.persist(empresa);
+		
+		// Execução
+		boolean foundEmpresa = empresaRepository.existsByEmailOrCnpj("facebook@gmail.com", "51799337000142");
+		
+		// Execução
+		Assertions.assertThat(foundEmpresa).isFalse();
 	}
 	
 	private Empresa createNewEmpresa() {
