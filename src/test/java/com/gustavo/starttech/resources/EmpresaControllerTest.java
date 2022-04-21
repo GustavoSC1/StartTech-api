@@ -22,7 +22,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gustavo.starttech.dtos.EmpresaDTO;
 import com.gustavo.starttech.dtos.EmpresaNewDTO;
+import com.gustavo.starttech.entities.Empresa;
 import com.gustavo.starttech.services.EmpresaService;
+import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -101,6 +103,22 @@ public class EmpresaControllerTest {
 			.andExpect(MockMvcResultMatchers.jsonPath("cnpj").value("51799337000141"))
 			.andExpect(MockMvcResultMatchers.jsonPath("nomeFantasia").value("Google"));
 		
+	}
+	
+	@Test
+	@DisplayName("Should return error when trying to get a non-existent company")
+	public void empresaNotFoundByIdTest() throws Exception {
+		Long id = 2l;
+		
+		BDDMockito.given(empresaService.find(id)).willThrow(new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName()));
+		
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(EMPRESA_API.concat("/"+id)).accept(MediaType.APPLICATION_JSON);
+	
+		mvc
+		.perform(request)
+		.andExpect(MockMvcResultMatchers.status().isNotFound())
+		.andExpect(MockMvcResultMatchers.jsonPath("error").value("Não encontrado"))
+		.andExpect(MockMvcResultMatchers.jsonPath("message").value("Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName()));
 	}
 	
 	@Test

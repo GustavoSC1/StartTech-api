@@ -9,6 +9,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
+
 @ControllerAdvice
 public class ResourceExceptionHandler {
 	
@@ -20,6 +22,12 @@ public class ResourceExceptionHandler {
 		}
 		
 		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(err);
+	}
+	
+	@ExceptionHandler(ObjectNotFoundException.class)
+	public ResponseEntity<StandardError> objectNotFound(ObjectNotFoundException e, HttpServletRequest request) {
+		StandardError err = new StandardError(System.currentTimeMillis(), HttpStatus.NOT_FOUND.value(), "Não encontrado", e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(err);
 	}
 
 }

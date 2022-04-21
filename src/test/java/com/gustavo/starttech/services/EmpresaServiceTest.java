@@ -85,7 +85,7 @@ public class EmpresaServiceTest {
 		// Execução		
 		Exception exception = assertThrows(ObjectNotFoundException.class, () -> {empresaService.find(id);});
 		
-		String expectedMessage = "Objeto não encontrado! Id: 1, Tipo: com.gustavo.starttech.entities.Empresa";
+		String expectedMessage = "Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName();
 		String actualMessage = exception.getMessage();
 		
 		Assertions.assertThat(actualMessage).isEqualTo(expectedMessage);
