@@ -24,6 +24,7 @@ import com.gustavo.starttech.dtos.EmpresaDTO;
 import com.gustavo.starttech.dtos.EmpresaNewDTO;
 import com.gustavo.starttech.entities.Empresa;
 import com.gustavo.starttech.services.EmpresaService;
+import com.gustavo.starttech.services.exceptions.BusinessException;
 import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
 
 @ExtendWith(SpringExtension.class)
@@ -64,6 +65,28 @@ public class EmpresaControllerTest {
 		.perform(request)
 		.andExpect( MockMvcResultMatchers.status().isCreated() )
 		.andExpect( MockMvcResultMatchers.header().string(HttpHeaders.LOCATION, Matchers.containsString("/empresas/"+id)) );
+	}
+	
+	@Test
+	@DisplayName("Should throw business error when trying to save a company with duplicate email or cnpj")
+	public void shouldNotSaveACompanyWithDuplicatedEmailOrCnpj() throws Exception {
+		EmpresaNewDTO newEmpresa = new EmpresaNewDTO("Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
+
+		BDDMockito.given(empresaService.save(Mockito.any(EmpresaNewDTO.class))).willThrow(new BusinessException("Email ou CNPJ já cadastrado!"));
+		
+		String json = new ObjectMapper().writeValueAsString(newEmpresa);
+		
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+				.post(EMPRESA_API)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.content(json);
+	
+		mvc
+		.perform(request)
+		.andExpect(MockMvcResultMatchers.status().isBadRequest())
+		.andExpect(MockMvcResultMatchers.jsonPath("error").value("Exceção de negócio"))
+		.andExpect(MockMvcResultMatchers.jsonPath("message").value("Email ou CNPJ já cadastrado!"));
 	}
 		
 	@Test
