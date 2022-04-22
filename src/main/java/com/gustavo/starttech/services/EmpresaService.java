@@ -8,6 +8,7 @@ import com.gustavo.starttech.dtos.EmpresaDTO;
 import com.gustavo.starttech.dtos.EmpresaNewDTO;
 import com.gustavo.starttech.entities.Empresa;
 import com.gustavo.starttech.repositories.EmpresaRepository;
+import com.gustavo.starttech.services.exceptions.BusinessException;
 import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
 
 @Service
@@ -20,6 +21,11 @@ public class EmpresaService {
 	}
 
 	public EmpresaDTO save(EmpresaNewDTO empresaDto) {
+		
+		if(empresaRepository.existsByEmailOrCnpj(empresaDto.getEmail(), empresaDto.getCnpj())) {
+			throw new BusinessException("Email ou CNPJ já cadastrado!");
+		}
+		
 		Empresa empresa  = new Empresa(null, empresaDto.getNome(), empresaDto.getEmail(), empresaDto.getTelefone(), empresaDto.getCelular(), empresaDto.getCnpj(), empresaDto.getNomeFantasia());
 		
 		empresa = empresaRepository.save(empresa);

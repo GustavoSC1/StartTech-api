@@ -17,6 +17,7 @@ import com.gustavo.starttech.dtos.EmpresaDTO;
 import com.gustavo.starttech.dtos.EmpresaNewDTO;
 import com.gustavo.starttech.entities.Empresa;
 import com.gustavo.starttech.repositories.EmpresaRepository;
+import com.gustavo.starttech.services.exceptions.BusinessException;
 import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
 
 @ExtendWith(SpringExtension.class)
@@ -55,6 +56,23 @@ public class EmpresaServiceTest {
 	}
 	
 	@Test
+	@DisplayName("Should throw business error when trying to save a company with duplicate email or cnpj")
+	public void shouldNotSaveACompanyWithDuplicatedEmailOrCnpj() {
+		// Cenário
+		EmpresaNewDTO newEmpresa = new EmpresaNewDTO("Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
+				
+		Mockito.when(empresaRepository.existsByEmailOrCnpj(newEmpresa.getEmail(), newEmpresa.getCnpj())).thenReturn(true);
+		
+		// Execução e Verificação
+		Exception exception = assertThrows(BusinessException.class, () -> {empresaService.save(newEmpresa);});
+		
+		String expectedMessage = "Email ou CNPJ já cadastrado!";
+		String actualMessage = exception.getMessage();
+		
+		Assertions.assertThat(actualMessage).isEqualTo(expectedMessage);
+	}
+	
+	@Test
 	@DisplayName("Must get one empresa per id")
 	public void findEmpresaTest() {
 		// Cenário
@@ -82,7 +100,7 @@ public class EmpresaServiceTest {
 		Long id = 1l;
 		Mockito.when(empresaRepository.findById(id)).thenReturn(Optional.empty());
 		
-		// Execução		
+		// Execução	e Verificação
 		Exception exception = assertThrows(ObjectNotFoundException.class, () -> {empresaService.find(id);});
 		
 		String expectedMessage = "Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName();
