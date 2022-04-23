@@ -26,58 +26,58 @@ public class EmpresaRepositoryTest {
 	EmpresaRepository empresaRepository;
 	
 	@Test
-	@DisplayName("Must save a Empresa")
+	@DisplayName("Must save a company")
 	public void saveEmpresaTest() {		
-		// Cenario
+		// Scenario
 		Empresa newEmpresa = createNewEmpresa();
 				
-		// Execução
+		// Execution
 		Empresa savedEmpresa = empresaRepository.save(newEmpresa);
 		
-		// Execução
+		// Verification
 		Assertions.assertThat(savedEmpresa.getId()).isNotNull();		
 	}
 	
 	@Test
-	@DisplayName("Must get one empresa per id")
+	@DisplayName("Must get one company per id")
 	public void findByIdTest() {
-		// Cenario
+		// Scenario
 		Empresa empresa = createNewEmpresa();
 		entityManager.persist(empresa);
 		
-		// Execução
+		// Execution
 		Optional<Empresa> foundEmpresa = empresaRepository.findById(empresa.getId());
 		empresaRepository.existsById(empresa.getId());
 		
-		// Execução
+		// Verification
 		Assertions.assertThat(foundEmpresa.isPresent()).isTrue();
 	}
 	
 	@Test
 	@DisplayName("Must check if there is a company with the email or cnpj provided")
 	public void existsByEmailOrCnpjTest() {
-		// Cenario
+		// Scenario
 		Empresa empresa = createNewEmpresa();
 		entityManager.persist(empresa);
 		
-		// Execução
+		// Execution
 		boolean foundEmpresa = empresaRepository.existsByEmailOrCnpj(empresa.getEmail(), empresa.getCnpj());
 		
-		// Execução
+		// Verification
 		Assertions.assertThat(foundEmpresa).isTrue();
 	}
 	
 	@Test
 	@DisplayName("Should return false when verifying the existence of a company by email or cnpj")
 	public void empresaNotExistsByEmailOrCnpjTest() {
-		// Cenario
+		// Scenario
 		Empresa empresa = createNewEmpresa();
 		entityManager.persist(empresa);
 		
-		// Execução
+		// Execution
 		boolean foundEmpresa = empresaRepository.existsByEmailOrCnpj("facebook@gmail.com", "51799337000142");
 		
-		// Execução
+		// Verification
 		Assertions.assertThat(foundEmpresa).isFalse();
 	}
 	

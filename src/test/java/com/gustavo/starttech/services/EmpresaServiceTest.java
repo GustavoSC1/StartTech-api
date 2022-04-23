@@ -23,7 +23,7 @@ import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class EmpresaServiceTest {
-	
+	// Scenario
 	EmpresaService empresaService;
 	
 	@MockBean
@@ -35,9 +35,9 @@ public class EmpresaServiceTest {
 	}
 	
 	@Test
-	@DisplayName("Must save a Empresa")
+	@DisplayName("Must save a company")
 	public void saveEmpresaTest() {
-		// Cenário
+		// Scenario
 		Long id = 2l;
 		EmpresaNewDTO newEmpresa = new EmpresaNewDTO("Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
 		Empresa savedEmpresa = createNewEmpresa();
@@ -45,10 +45,10 @@ public class EmpresaServiceTest {
 		
 		Mockito.when(empresaRepository.save(Mockito.any(Empresa.class))).thenReturn(savedEmpresa);
 		
-		// Execução
+		// Execution
 		EmpresaDTO savedEmpresaDto = empresaService.save(newEmpresa);
 		
-		// Verificação
+		// Verification
 		Assertions.assertThat(savedEmpresaDto.getId()).isEqualTo(id);
 		Assertions.assertThat(savedEmpresaDto.getNome()).isEqualTo("Google LLC");
 		Assertions.assertThat(savedEmpresaDto.getEmail()).isEqualTo("google@gmail.com");
@@ -58,12 +58,12 @@ public class EmpresaServiceTest {
 	@Test
 	@DisplayName("Should throw business error when trying to save a company with duplicate email or cnpj")
 	public void shouldNotSaveACompanyWithDuplicatedEmailOrCnpj() {
-		// Cenário
+		// Scenario
 		EmpresaNewDTO newEmpresa = new EmpresaNewDTO("Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
 				
 		Mockito.when(empresaRepository.existsByEmailOrCnpj(newEmpresa.getEmail(), newEmpresa.getCnpj())).thenReturn(true);
 		
-		// Execução e Verificação
+		// Execution and Verification
 		Exception exception = assertThrows(BusinessException.class, () -> {empresaService.save(newEmpresa);});
 		
 		String expectedMessage = "Email ou CNPJ já cadastrado!";
@@ -73,9 +73,9 @@ public class EmpresaServiceTest {
 	}
 	
 	@Test
-	@DisplayName("Must get one empresa per id")
+	@DisplayName("Must get one company per id")
 	public void findEmpresaTest() {
-		// Cenário
+		// Scenario
 		Long id = 2l;
 		
 		Empresa empresa = createNewEmpresa();
@@ -83,10 +83,10 @@ public class EmpresaServiceTest {
 		
 		Mockito.when(empresaRepository.findById(id)).thenReturn(Optional.of(empresa));
 		
-		// Execução
+		// Execution
 		EmpresaDTO foundEmpresa  = empresaService.find(id);
 		
-		// Verificação
+		// Verification
 		Assertions.assertThat(foundEmpresa.getId()).isEqualTo(empresa.getId());
 		Assertions.assertThat(foundEmpresa.getNome()).isEqualTo(empresa.getNome());
 		Assertions.assertThat(foundEmpresa.getEmail()).isEqualTo(empresa.getEmail());
@@ -96,11 +96,11 @@ public class EmpresaServiceTest {
 	@Test
 	@DisplayName("Should return error when trying to get a non-existent company")
 	public void empresaNotFoundByIdTest() {
-		// Cenário
+		// Scenario
 		Long id = 1l;
 		Mockito.when(empresaRepository.findById(id)).thenReturn(Optional.empty());
 		
-		// Execução	e Verificação
+		// Execution and Verification
 		Exception exception = assertThrows(ObjectNotFoundException.class, () -> {empresaService.find(id);});
 		
 		String expectedMessage = "Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName();
@@ -110,9 +110,9 @@ public class EmpresaServiceTest {
 	}
 	
 	@Test
-	@DisplayName("Must update a empresa")
+	@DisplayName("Must update a company")
 	public void updateEmpresaTest() {
-		// Cenário
+		// Scenario
 		Long id = 2l;
 		
 		EmpresaDTO empresaDto = new EmpresaDTO(id, "Meta Platforms, Inc.", "meta@gmail.com", "1829129908", "23488218876", "51799337000567", "Meta");
@@ -125,10 +125,10 @@ public class EmpresaServiceTest {
 		Mockito.when(empresaRepository.findById(id)).thenReturn(Optional.of(foundEmpresa));
 		Mockito.when(empresaRepository.save(Mockito.any(Empresa.class))).thenReturn(updatedEmpresa);
 		
-		// Execução		
+		// Execution	
 		EmpresaDTO updatedEmpresaDto =  empresaService.update(id, empresaDto);
 				
-		// Verificação
+		// Verification
 		Assertions.assertThat(updatedEmpresaDto.getId()).isEqualTo(empresaDto.getId());
 		Assertions.assertThat(updatedEmpresaDto.getNome()).isEqualTo(empresaDto.getNome());
 		Assertions.assertThat(updatedEmpresaDto.getEmail()).isEqualTo(empresaDto.getEmail());
@@ -139,12 +139,12 @@ public class EmpresaServiceTest {
 	@Test
 	@DisplayName("Should return error when trying to update a non-existent company")
 	public void empresaNotUpdatedByIdTest() {
-		// Cenário
+		// Scenario
 		Long id = 1l;
 		EmpresaDTO empresaDto = new EmpresaDTO(createNewEmpresa());
 		Mockito.when(empresaRepository.findById(id)).thenReturn(Optional.empty());
 		
-		// Execução		
+		// Execution and Verification	
 		Exception exception = assertThrows(ObjectNotFoundException.class, () -> {empresaService.update(id, empresaDto);});
 		
 		String expectedMessage = "Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName();

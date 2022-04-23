@@ -42,9 +42,9 @@ public class EmpresaControllerTest {
 	EmpresaService empresaService;
 	
 	@Test	
-	@DisplayName("Must save a Empresa")
+	@DisplayName("Must save a company")
 	public void saveEmpresaTest() throws Exception {
-		
+		// Scenario
 		long id = 2l;
 		
 		EmpresaNewDTO newEmpresa = new EmpresaNewDTO("Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
@@ -52,15 +52,17 @@ public class EmpresaControllerTest {
 		savedEmpresa.setId(id);
 		
 		BDDMockito.given(empresaService.save(Mockito.any(EmpresaNewDTO.class))).willReturn(savedEmpresa);
-	
+
 		String json = new ObjectMapper().writeValueAsString(newEmpresa);
 		
+		// Execution
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 													.post(EMPRESA_API)
 													.contentType(MediaType.APPLICATION_JSON)
 													.accept(MediaType.APPLICATION_JSON)
 													.content(json);
 		
+		// Verification
 		mvc
 		.perform(request)
 		.andExpect( MockMvcResultMatchers.status().isCreated() )
@@ -70,18 +72,21 @@ public class EmpresaControllerTest {
 	@Test
 	@DisplayName("Should throw business error when trying to save a company with duplicate email or cnpj")
 	public void shouldNotSaveACompanyWithDuplicatedEmailOrCnpj() throws Exception {
+		// Scenario
 		EmpresaNewDTO newEmpresa = new EmpresaNewDTO("Google LLC", "google@gmail.com", "1629129421", "16988218142", "51799337000141", "Google");
 
 		BDDMockito.given(empresaService.save(Mockito.any(EmpresaNewDTO.class))).willThrow(new BusinessException("Email ou CNPJ já cadastrado!"));
 		
 		String json = new ObjectMapper().writeValueAsString(newEmpresa);
 		
+		// Execution
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 				.post(EMPRESA_API)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)
 				.content(json);
-	
+		
+		// Verification
 		mvc
 		.perform(request)
 		.andExpect(MockMvcResultMatchers.status().isBadRequest())
@@ -90,25 +95,28 @@ public class EmpresaControllerTest {
 	}
 		
 	@Test
-	@DisplayName("Should throw validation error when there is not enough data for empresa creation")
+	@DisplayName("Should throw validation error when there is not enough data for company creation")
 	public void createInvalidEmpresaTest() throws Exception {
-		
+		// Scenario
 		String json = new ObjectMapper().writeValueAsString(new EmpresaNewDTO());
 		
+		// Execution
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 				.post(EMPRESA_API)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)
 				.content(json);
 		
+		// Verification
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
 			.andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(6)));		
 	}
 	
 	@Test
-	@DisplayName("Must get one empresa per id")
+	@DisplayName("Must get one company per id")
 	public void findEmpresaTest() throws Exception {
+		// Scenario
 		Long id = 2l;
 		
 		EmpresaDTO empresa = createNewEmpresaDto();
@@ -116,8 +124,10 @@ public class EmpresaControllerTest {
 		
 		BDDMockito.given(empresaService.find(id)).willReturn(empresa);
 		
+		// Execution
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(EMPRESA_API.concat("/"+id)).accept(MediaType.APPLICATION_JSON);
 		
+		// Verification
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isOk())
 			.andExpect(MockMvcResultMatchers.jsonPath("id").value(id))
@@ -131,12 +141,15 @@ public class EmpresaControllerTest {
 	@Test
 	@DisplayName("Should return error when trying to get a non-existent company")
 	public void empresaNotFoundByIdTest() throws Exception {
+		// Scenario
 		Long id = 2l;
 		
 		BDDMockito.given(empresaService.find(id)).willThrow(new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Empresa.class.getName()));
 		
+		// Execution
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(EMPRESA_API.concat("/"+id)).accept(MediaType.APPLICATION_JSON);
-	
+		
+		// Verification
 		mvc
 		.perform(request)
 		.andExpect(MockMvcResultMatchers.status().isNotFound())
@@ -145,8 +158,9 @@ public class EmpresaControllerTest {
 	}
 	
 	@Test
-	@DisplayName("Must update a empresa")
+	@DisplayName("Must update a company")
 	public void updateEmpresaTest() throws Exception {
+		// Scenario
 		Long id = 2l;
 		
 		EmpresaDTO empresaDto = new EmpresaDTO(id, "Meta Platforms, Inc.", "meta@gmail.com", "1829129908", "23488218876", "15546120000166", "Meta");
@@ -155,11 +169,14 @@ public class EmpresaControllerTest {
 		
 		String json = new ObjectMapper().writeValueAsString(empresaDto);
 		
+		// Execution
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 													.put(EMPRESA_API.concat("/"+id))
 													.contentType(MediaType.APPLICATION_JSON)
 													.accept(MediaType.APPLICATION_JSON)
 													.content(json);
+		
+		// Verification
 		mvc.perform(request)
 		.andExpect(MockMvcResultMatchers.status().isOk())
 		.andExpect(MockMvcResultMatchers.jsonPath("id").value(id))
@@ -172,16 +189,19 @@ public class EmpresaControllerTest {
 	@Test
 	@DisplayName("Should throw validation error when there is not enough data to update the company")
 	public void updateInvalidEmpresaTest() throws Exception {
+		// Scenario
 		Long id = 2l;
 		
 		String json = new ObjectMapper().writeValueAsString(new EmpresaDTO());
 		
+		// Execution
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 				.put(EMPRESA_API.concat("/"+id))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)
 				.content(json);
 		
+		// Verification
 		mvc.perform(request)
 		.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
 		.andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(6)));
@@ -190,6 +210,7 @@ public class EmpresaControllerTest {
 	@Test
 	@DisplayName("Should return error when trying to update a non-existent company")
 	public void empresaNotUpdatedByIdTest() throws Exception {
+		// Scenario
 		Long id = 2l;
 		
 		EmpresaDTO empresaDto = new EmpresaDTO(id, "Meta Platforms, Inc.", "meta@gmail.com", "1829129908", "23488218876", "15546120000166", "Meta");
@@ -198,12 +219,14 @@ public class EmpresaControllerTest {
 		
 		String json = new ObjectMapper().writeValueAsString(empresaDto);
 		
+		// Execution
 		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
 				.put(EMPRESA_API.concat("/"+id))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)
 				.content(json);
-	
+		
+		// Verification
 		mvc
 		.perform(request)
 		.andExpect(MockMvcResultMatchers.status().isNotFound())
