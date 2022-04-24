@@ -1,5 +1,7 @@
 package com.gustavo.starttech.repositories;
 
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +36,25 @@ public class EstadoRepositoryTest {
 		
 		// Verification
 		Assertions.assertThat(savedEstado.getId()).isNotNull();
+	}
+	
+	@Test
+	@DisplayName("Must get all states order by name")
+	public void findAllByOrderByNomeTest() {
+		// Scenario
+		Estado estado = new Estado(null, "Bahia");
+		Estado estado2 = new Estado(null, "São Paulo");
+		
+		entityManager.persist(estado);
+		entityManager.persist(estado2);
+		
+		// Execution
+		List<Estado> estados = estadoRepository.findAllByOrderByNome();
+		
+		// Verification
+		Assertions.assertThat(estados.size()).isEqualTo(2);
+		Assertions.assertThat(estados.get(0).getNome()).isEqualTo(estado.getNome());
+		Assertions.assertThat(estados.get(1).getNome()).isEqualTo(estado2.getNome());
 	}
 
 }
