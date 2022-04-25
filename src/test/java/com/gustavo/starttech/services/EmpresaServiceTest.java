@@ -23,7 +23,7 @@ import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 public class EmpresaServiceTest {
-	// Scenario
+	
 	EmpresaService empresaService;
 	
 	@MockBean
