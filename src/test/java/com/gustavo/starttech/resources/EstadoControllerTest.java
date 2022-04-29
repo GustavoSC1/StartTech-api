@@ -20,7 +20,9 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.gustavo.starttech.dtos.CidadeDTO;
 import com.gustavo.starttech.dtos.EstadoDTO;
+import com.gustavo.starttech.services.CidadeService;
 import com.gustavo.starttech.services.EstadoService;
 
 @ExtendWith(SpringExtension.class)
@@ -37,6 +39,9 @@ public class EstadoControllerTest {
 	@MockBean
 	EstadoService estadoService;
 	
+	@MockBean
+	CidadeService cidadeService;
+	
 	@Test
 	@DisplayName("Must get all states order by name")
 	public void findAllTest() throws Exception {
@@ -52,6 +57,28 @@ public class EstadoControllerTest {
 													.get(ESTADO_API)
 													.accept(MediaType.APPLICATION_JSON);
 	
+		// Verification
+		mvc.perform(request)
+		.andExpect(MockMvcResultMatchers.status().isOk())
+		.andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)));		
+	}
+	
+	@Test
+	@DisplayName("Must get all cities in a state sorted by name")
+	public void findCidadesTest() throws Exception {
+		// Scenario
+		Long id = 1l;
+		
+		List<CidadeDTO> cidadesDto = new ArrayList<>();
+		cidadesDto.add(new CidadeDTO(1l, "Paramirim"));
+		cidadesDto.add(new CidadeDTO(2l, "Vitória da Conquista"));
+		
+		BDDMockito.given(cidadeService.findByEstado(id)).willReturn(cidadesDto);
+		
+		// Execution
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+													.get(ESTADO_API.concat("/"+id+"/cidades"))
+													.accept(MediaType.APPLICATION_JSON);
 		// Verification
 		mvc.perform(request)
 		.andExpect(MockMvcResultMatchers.status().isOk())
