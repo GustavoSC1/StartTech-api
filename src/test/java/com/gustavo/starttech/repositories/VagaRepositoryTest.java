@@ -1,6 +1,6 @@
 package com.gustavo.starttech.repositories;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +27,7 @@ public class VagaRepositoryTest {
 	@DisplayName("Must save a job opportunity")
 	public void saveVagaTest() {
 		// Scenario
-		Vaga newVaga = new Vaga(null, "Estágio Java", "Vaga para Estágio Java", 1200.0,LocalDate.of(2002, 11, 12), StatusVaga.ABERTA, ModalidadeVaga.REMOTO, null, null);
+		Vaga newVaga = new Vaga(null, "Estágio Java", "Vaga para Estágio Java", 1200.0,LocalDateTime.of(2022, 11, 12, 10, 15), StatusVaga.ABERTA, ModalidadeVaga.REMOTO, null);
 		
 		// Execution
 		Vaga savedVaga = vagaRepository.save(newVaga);

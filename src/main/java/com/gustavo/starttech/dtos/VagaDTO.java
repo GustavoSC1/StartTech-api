@@ -1,26 +1,15 @@
-package com.gustavo.starttech.entities;
+package com.gustavo.starttech.dtos;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-
+import com.gustavo.starttech.entities.Vaga;
 import com.gustavo.starttech.entities.enums.ModalidadeVaga;
 import com.gustavo.starttech.entities.enums.StatusVaga;
 
-@Entity
-public class Vaga implements Serializable {
+public class VagaDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String titulo;
 	private String descricao;
@@ -28,20 +17,15 @@ public class Vaga implements Serializable {
 	private LocalDateTime abertura;
 	private StatusVaga status;
 	private ModalidadeVaga modalidade;
-		
-	@OneToOne(cascade = CascadeType.ALL, mappedBy = "vaga")
-	private Endereco endereco;
 	
-	@ManyToOne
-	@JoinColumn(name = "empresa_id")
-	private Empresa empresa;
-		
-	public Vaga() {
+	private EnderecoDTO endereco;
+	
+	public VagaDTO() {
 		
 	}
 
-	public Vaga(Long id, String titulo, String descricao, Double salario, LocalDateTime abertura, StatusVaga status,
-			ModalidadeVaga modalidade, Empresa empresa) {
+	public VagaDTO(Long id, String titulo, String descricao, Double salario, LocalDateTime abertura, StatusVaga status,
+			ModalidadeVaga modalidade, EnderecoDTO endereco) {
 		super();
 		this.id = id;
 		this.titulo = titulo;
@@ -50,7 +34,19 @@ public class Vaga implements Serializable {
 		this.abertura = abertura;
 		this.status = status;
 		this.modalidade = modalidade;
-		this.empresa = empresa;
+		this.endereco = endereco;
+	}
+	
+	public VagaDTO(Vaga vaga) {
+		super();
+		this.id = vaga.getId();
+		this.titulo = vaga.getTitulo();
+		this.descricao = vaga.getDescricao();
+		this.salario = vaga.getSalario();
+		this.abertura = vaga.getAbertura();
+		this.status = vaga.getStatus();
+		this.modalidade = vaga.getModalidade();
+		this.endereco = new EnderecoDTO(vaga.getEndereco());
 	}
 
 	public Long getId() {
@@ -81,12 +77,8 @@ public class Vaga implements Serializable {
 		return modalidade;
 	}
 
-	public Endereco getEndereco() {
+	public EnderecoDTO getEndereco() {
 		return endereco;
-	}
-
-	public Empresa getEmpresa() {
-		return empresa;
 	}
 
 	public void setId(Long id) {
@@ -100,7 +92,7 @@ public class Vaga implements Serializable {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
-	
+
 	public void setSalario(Double salario) {
 		this.salario = salario;
 	}
@@ -117,37 +109,8 @@ public class Vaga implements Serializable {
 		this.modalidade = modalidade;
 	}
 
-	public void setEndereco(Endereco endereco) {
+	public void setEndereco(EnderecoDTO endereco) {
 		this.endereco = endereco;
-	}
-
-	public void setEmpresa(Empresa empresa) {
-		this.empresa = empresa;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Vaga other = (Vaga) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
 	}
 	
 }
