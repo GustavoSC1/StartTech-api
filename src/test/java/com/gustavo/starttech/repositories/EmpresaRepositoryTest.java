@@ -47,8 +47,7 @@ public class EmpresaRepositoryTest {
 		
 		// Execution
 		Optional<Empresa> foundEmpresa = empresaRepository.findById(empresa.getId());
-		empresaRepository.existsById(empresa.getId());
-		
+				
 		// Verification
 		Assertions.assertThat(foundEmpresa.isPresent()).isTrue();
 	}
