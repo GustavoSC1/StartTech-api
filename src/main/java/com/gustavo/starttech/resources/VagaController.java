@@ -2,6 +2,8 @@ package com.gustavo.starttech.resources;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +24,7 @@ public class VagaController {
 	private VagaService vagaService;
 	
 	@PostMapping
-	public ResponseEntity<VagaDTO> save(@RequestBody VagaNewDTO vagaNewDTO) {
+	public ResponseEntity<VagaDTO> save(@Valid @RequestBody VagaNewDTO vagaNewDTO) {
 		VagaDTO vaga = vagaService.save(vagaNewDTO);
 				
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")

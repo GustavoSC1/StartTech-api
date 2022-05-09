@@ -2,21 +2,39 @@ package com.gustavo.starttech.dtos;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.gustavo.starttech.entities.enums.ModalidadeVaga;
 
 public class VagaNewDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Length(min=10, max=120, message="O tamanho deve ser entre 10 e 120 caracteres")
 	private String titulo;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Length(min=20, message="O tamanho deve ser entre 3 e 120 caracteres")
 	private String descricao;
+	
+	@Min(value = 0, message = "O salário não pode ser negativo")
 	private Double salario;
+	
+	@NotNull(message="Preenchimento obrigatório")
 	private ModalidadeVaga modalidade;
+	
 	private String logradouro;
 	private String numero;
 	private String complemento;	
 	private String bairro;
-	private String cep;	
+	private String cep;		
 	private Long cidadeId;
+	
+	@Min(value = 1, message = "empresaId não pode ser menor que 1")	
 	private Long empresaId;
 		
 	public VagaNewDTO() {

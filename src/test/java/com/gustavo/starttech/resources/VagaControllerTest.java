@@ -66,5 +66,27 @@ public class VagaControllerTest {
 		.andExpect( MockMvcResultMatchers.status().isCreated() )
 		.andExpect( MockMvcResultMatchers.header().string(HttpHeaders.LOCATION, Matchers.containsString("/vagas/"+id)) );
 	}
+	
+	@Test
+	@DisplayName("Should throw validation error when there is not enough data for job opportunity creation")
+	public void createInvalidVagaTest() throws Exception {
+		// Scenario
+		VagaNewDTO newVaga = new VagaNewDTO();
+		newVaga.setEmpresaId(0l);
+		newVaga.setSalario(-1.0);
+		String json = new ObjectMapper().writeValueAsString(newVaga);
+		
+		// Execution
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+				.post(VAGA_API)
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON)
+				.content(json);
+		
+		// Verification
+		mvc.perform(request)
+			.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
+			.andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(5)));		
+	}
 
 }
