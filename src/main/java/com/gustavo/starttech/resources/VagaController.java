@@ -6,6 +6,8 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,6 +33,13 @@ public class VagaController {
 					.buildAndExpand(vaga.getId()).toUri();
 		
 		return ResponseEntity.created(uri).body(vaga);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<VagaDTO> find(@PathVariable Long id) {
+		VagaDTO vaga = vagaService.find(id);
+		
+		return ResponseEntity.ok().body(vaga);
 	}
 
 }

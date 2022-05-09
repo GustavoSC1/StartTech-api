@@ -1,5 +1,7 @@
 package com.gustavo.starttech.resources;
 
+import java.time.LocalDateTime;
+
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,9 +22,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gustavo.starttech.dtos.EnderecoDTO;
 import com.gustavo.starttech.dtos.VagaDTO;
 import com.gustavo.starttech.dtos.VagaNewDTO;
 import com.gustavo.starttech.entities.enums.ModalidadeVaga;
+import com.gustavo.starttech.entities.enums.StatusVaga;
 import com.gustavo.starttech.services.VagaService;
 
 @ExtendWith(SpringExtension.class)
@@ -87,6 +91,40 @@ public class VagaControllerTest {
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.status().isUnprocessableEntity())
 			.andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(5)));		
+	}
+	
+	@Test
+	@DisplayName("Must get one job opportunity per id")
+	public void findVagaTest() throws Exception {
+		// Scenario
+		Long id = 2l;
+		
+		VagaDTO vaga = createNewVagaDto();
+		vaga.setId(id);
+		
+		BDDMockito.given(vagaService.find(id)).willReturn(vaga);
+		
+		// Execution
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(VAGA_API.concat("/"+id)).accept(MediaType.APPLICATION_JSON);
+		
+		// Verification
+		mvc.perform(request)
+			.andExpect(MockMvcResultMatchers.status().isOk())
+			.andExpect(MockMvcResultMatchers.jsonPath("id").value(id))
+			.andExpect(MockMvcResultMatchers.jsonPath("titulo").value("Estágio Java"))
+			.andExpect(MockMvcResultMatchers.jsonPath("descricao").value("Vaga para Estágio Java"))
+			.andExpect(MockMvcResultMatchers.jsonPath("salario").value(1200.0))
+			.andExpect(MockMvcResultMatchers.jsonPath("status").value("ABERTA"))
+			.andExpect(MockMvcResultMatchers.jsonPath("endereco.logradouro").value("Rua Mamoré"))
+			.andExpect(MockMvcResultMatchers.jsonPath("endereco.cidade").value("São Paulo"))
+			.andExpect(MockMvcResultMatchers.jsonPath("endereco.estado").value("São Paulo"));
+	}
+	
+	public VagaDTO createNewVagaDto() {
+		EnderecoDTO enderecoDto = new EnderecoDTO(1l, "Rua Mamoré", "779", "Nenhum", "Chácaras Alto do Marimbondo", "15706216",
+				"São Paulo", "São Paulo");
+		return new VagaDTO(null, "Estágio Java", "Vaga para Estágio Java", 1200.0, LocalDateTime.now(), StatusVaga.ABERTA,
+				ModalidadeVaga.REMOTO, enderecoDto);
 	}
 
 }
