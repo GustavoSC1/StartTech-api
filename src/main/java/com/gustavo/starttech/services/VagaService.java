@@ -1,6 +1,7 @@
 package com.gustavo.starttech.services;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import com.gustavo.starttech.entities.Endereco;
 import com.gustavo.starttech.entities.Vaga;
 import com.gustavo.starttech.entities.enums.StatusVaga;
 import com.gustavo.starttech.repositories.VagaRepository;
+import com.gustavo.starttech.services.exceptions.ObjectNotFoundException;
 
 @Service
 public class VagaService {
@@ -35,6 +37,18 @@ public class VagaService {
 		vaga = vagaRepository.save(vaga);
 		
 		return new VagaDTO(vaga);
+	}
+	
+	public VagaDTO find(Long id) {
+		Vaga vaga = findById(id);
+		return new VagaDTO(vaga);
+	}
+	
+	public Vaga findById(Long id) {
+		Optional<Vaga> vagaOptional = vagaRepository.findById(id);
+		Vaga vaga = vagaOptional.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id + ", Tipo: " + Vaga.class.getName()));
+	
+		return vaga;
 	}
 
 }

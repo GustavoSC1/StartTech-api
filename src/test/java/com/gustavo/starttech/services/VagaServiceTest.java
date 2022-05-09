@@ -1,6 +1,7 @@
 package com.gustavo.starttech.services;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +65,29 @@ public class VagaServiceTest {
 		Assertions.assertThat(savedVagaDTO.getEndereco().getLogradouro()).isEqualTo("Rua Mamoré");
 		Assertions.assertThat(savedVagaDTO.getEndereco().getCidade()).isEqualTo("São Paulo");
 		Assertions.assertThat(savedVagaDTO.getEndereco().getEstado()).isEqualTo("São Paulo");
+	}
+	
+	@Test
+	@DisplayName("Must get one job opportunity per id")
+	public void findVagaTest() {
+		// Scenario
+		Long id = 2l;
+		
+		Vaga vaga = createNewVaga();
+		vaga.setId(id);
+		
+		Mockito.when(vagaRepository.findById(id)).thenReturn(Optional.of(vaga));
+		
+		// Execution
+		VagaDTO foundVaga = vagaService.find(id);
+		
+		// Verification
+		Assertions.assertThat(foundVaga.getId()).isEqualTo(id);
+		Assertions.assertThat(foundVaga.getTitulo()).isEqualTo("Estágio Java");
+		Assertions.assertThat(foundVaga.getDescricao()).isEqualTo("Vaga para Estágio Java");
+		Assertions.assertThat(foundVaga.getEndereco().getLogradouro()).isEqualTo("Rua Mamoré");
+		Assertions.assertThat(foundVaga.getEndereco().getCidade()).isEqualTo("São Paulo");
+		Assertions.assertThat(foundVaga.getEndereco().getEstado()).isEqualTo("São Paulo");
 	}
 	
 	private Vaga createNewVaga() {
